@@ -1,11 +1,13 @@
 package com.doiliomatsinhe.popularmovies.model;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Movie {
 
+    private static final String BASE_URL = "http://image.tmdb.org/t/p/w342/";
     @SerializedName("popularity")
     @Expose
     private Double popularity;
@@ -74,7 +76,7 @@ public class Movie {
     }
 
     public String getPosterPath() {
-        return posterPath;
+        return BASE_URL + posterPath;
     }
 
     public void setPosterPath(String posterPath) {

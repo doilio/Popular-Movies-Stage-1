@@ -23,6 +23,12 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<List<Movie>> _movieList = new MutableLiveData<>();
     public LiveData<List<Movie>> movieList = _movieList;
 
+    public String filter;
+
+    public String getFilter() { return filter; }
+
+    public void setFilter(String filter) { this.filter = filter; }
+
     public MainViewModel(MovieRepository repository) {
         this.repository = repository;
     }
@@ -40,8 +46,8 @@ public class MainViewModel extends ViewModel {
                     List<Movie> listOfMovies = new ArrayList<>(movieResponse.getResults());
 
                     _movieList.setValue(listOfMovies);
-                    Log.d("MainViewModel", "Movie: " + movieList.get(0).getTitle());
-                }else{
+                    Log.d("MainViewModel", "Movie: " + movieList.get(0).getPosterPath());
+                } else {
 
                     Log.d("MainViewModel", "Resposta Vazia");
                 }

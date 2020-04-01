@@ -1,50 +1,112 @@
 package com.doiliomatsinhe.popularmovies.ui.main;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.doiliomatsinhe.popularmovies.R;
+import com.doiliomatsinhe.popularmovies.adapter.MovieAdapter;
+import com.doiliomatsinhe.popularmovies.databinding.ActivityMainBinding;
 import com.doiliomatsinhe.popularmovies.model.Movie;
 import com.doiliomatsinhe.popularmovies.model.MovieRepository;
-import com.doiliomatsinhe.popularmovies.model.MovieResponse;
-import com.doiliomatsinhe.popularmovies.network.APIService;
-import com.doiliomatsinhe.popularmovies.network.ServiceBuilder;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class MainActivity extends AppCompatActivity {
-
-    public static final String CATEGORY = "popular";
-    private static final String TAG = MainActivity.class.getSimpleName();
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private MainViewModel viewModel;
-    private MainViewModelFactory factory;
-    private MovieRepository repository;
+    private MovieAdapter adapter;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         initComponentes();
 
-        viewModel.getMovies(CATEGORY);
+        initAdapter();
+
+        decideWhatToShow();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        String filter;
+        switch (item.getItemId()) {
+            case R.id.ic_popular:
+                filter = getString(R.string.popular_filter);
+                recoverMovies(filter);
+                break;
+            case R.id.ic_rating:
+                filter = getString(R.string.top_rated_filter);
+                recoverMovies(filter);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void recoverMovies(String category) {
+        binding.swipeRefresh.setRefreshing(true);
+        viewModel.setFilter(category);
+        viewModel.getMovies(category).observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(List<Movie> movies) {
+                adapter.setMovieList(movies);
+                binding.swipeRefresh.setRefreshing(false);
+            }
+        });
+    }
+
+    private void initAdapter() {
+        adapter = new MovieAdapter();
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        binding.recyclerMovies.setLayoutManager(layoutManager);
+        binding.recyclerMovies.setHasFixedSize(true);
+        binding.recyclerMovies.setAdapter(adapter);
     }
 
     private void initComponentes() {
 
+        binding.swipeRefresh.setOnRefreshListener(this);
+
         // Initializing the repository, factory and the ViewModel
-        repository = new MovieRepository();
-        factory = new MainViewModelFactory(repository);
+        MovieRepository repository = new MovieRepository(getString(R.string.api_key));
+        MainViewModelFactory factory = new MainViewModelFactory(repository);
         viewModel = new ViewModelProvider(this, factory).get(MainViewModel.class);
     }
 
+    @Override
+    public void onRefresh() {
+        decideWhatToShow();
+    }
+
+    private void decideWhatToShow() {
+        if (viewModel.getFilter() == null) {
+            viewModel.setFilter(getString(R.string.popular_filter));
+            recoverMovies(viewModel.getFilter());
+        } else {
+            recoverMovies(viewModel.getFilter());
+        }
+        if (viewModel.getFilter().equalsIgnoreCase(getString(R.string.popular_filter))) {
+            recoverMovies(getString(R.string.popular_filter));
+        } else {
+            recoverMovies(getString(R.string.top_rated_filter));
+        }
+    }
 }
