@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import com.doiliomatsinhe.popularmovies.adapter.MovieAdapter;
 import com.doiliomatsinhe.popularmovies.databinding.ActivityMainBinding;
 import com.doiliomatsinhe.popularmovies.model.Movie;
 import com.doiliomatsinhe.popularmovies.model.MovieRepository;
+import com.doiliomatsinhe.popularmovies.ui.detail.DetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private MovieAdapter adapter;
     private ActivityMainBinding binding;
     private List<Movie> movieList = new ArrayList<>();
+    public static final String MOVIE = "Movie";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     public void onMovieItemClick(int position) {
         Movie selectedMovie = movieList.get(position);
-        Toast.makeText(this, selectedMovie.getTitle(), Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(this, DetailActivity.class);
+        i.putExtra(MOVIE, selectedMovie);
+        startActivity(i);
     }
 }

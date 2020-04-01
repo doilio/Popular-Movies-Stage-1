@@ -1,11 +1,12 @@
 package com.doiliomatsinhe.popularmovies.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Movie {
+public class Movie implements Serializable {
 
     private static final String BASE_URL = "http://image.tmdb.org/t/p/w342/";
     @SerializedName("popularity")
@@ -100,7 +101,7 @@ public class Movie {
     }
 
     public String getBackdropPath() {
-        return backdropPath;
+        return BASE_URL + backdropPath;
     }
 
     public void setBackdropPath(String backdropPath) {
