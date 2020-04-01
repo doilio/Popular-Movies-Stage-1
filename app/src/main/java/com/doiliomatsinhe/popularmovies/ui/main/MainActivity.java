@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.doiliomatsinhe.popularmovies.R;
 import com.doiliomatsinhe.popularmovies.adapter.MovieAdapter;
@@ -18,13 +19,15 @@ import com.doiliomatsinhe.popularmovies.databinding.ActivityMainBinding;
 import com.doiliomatsinhe.popularmovies.model.Movie;
 import com.doiliomatsinhe.popularmovies.model.MovieRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, MovieAdapter.MovieItemClickListener {
 
     private MainViewModel viewModel;
     private MovieAdapter adapter;
     private ActivityMainBinding binding;
+    private List<Movie> movieList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +72,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             public void onChanged(List<Movie> movies) {
                 adapter.setMovieList(movies);
                 binding.swipeRefresh.setRefreshing(false);
+                movieList = movies;
+
             }
         });
     }
 
     private void initAdapter() {
-        adapter = new MovieAdapter();
+        adapter = new MovieAdapter(this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         binding.recyclerMovies.setLayoutManager(layoutManager);
         binding.recyclerMovies.setHasFixedSize(true);
@@ -108,5 +113,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         } else {
             recoverMovies(getString(R.string.top_rated_filter));
         }
+    }
+
+    @Override
+    public void onMovieItemClick(int position) {
+        Movie selectedMovie = movieList.get(position);
+        Toast.makeText(this, selectedMovie.getTitle(), Toast.LENGTH_SHORT).show();
     }
 }

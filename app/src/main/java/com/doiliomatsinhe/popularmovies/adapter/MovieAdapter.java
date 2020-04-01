@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,18 +19,30 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     private List<Movie> movieList = new ArrayList<>();
+    final private MovieItemClickListener onClickListener;
+
+    public MovieAdapter(MovieItemClickListener listener) {
+        onClickListener = listener;
+    }
 
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView movieImage;
 
-         ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             movieImage = itemView.findViewById(R.id.movie_image);
+            itemView.setOnClickListener(this);
         }
 
         void bind(Movie movie) {
             Picasso.get().load(movie.getPosterPath()).into(movieImage);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int clickedItem = getAdapterPosition();
+            onClickListener.onMovieItemClick(clickedItem);
         }
     }
 
@@ -56,5 +69,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movieList.size();
     }
 
-
+    public interface MovieItemClickListener {
+        void onMovieItemClick(int position);
+    }
 }
