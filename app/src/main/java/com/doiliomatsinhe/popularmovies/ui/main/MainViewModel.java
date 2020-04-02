@@ -21,7 +21,7 @@ public class MainViewModel extends ViewModel {
 
     private MovieRepository repository;
     private MutableLiveData<List<Movie>> _movieList = new MutableLiveData<>();
-    public LiveData<List<Movie>> movieList = _movieList;
+    //public LiveData<List<Movie>> movieList = _movieList; will use this in the future.
 
     public String filter;
 
@@ -34,6 +34,11 @@ public class MainViewModel extends ViewModel {
     }
 
 
+    /**
+     * Gets a list of Movies by making an Asynchronous call with Retrofit.
+     * @param categoria filter to determine what list will show up
+     * @return LiveData to update the list if API changes happen.
+     */
     public LiveData<List<Movie>> getMovies(String categoria) {
         repository.getMovies(categoria).enqueue(new Callback<MovieResponse>() {
             @Override
@@ -48,8 +53,8 @@ public class MainViewModel extends ViewModel {
                     _movieList.setValue(listOfMovies);
                     Log.d("MainViewModel", "Movie: " + movieList.get(0).getPosterPath());
                 } else {
-
-                    Log.d("MainViewModel", "Resposta Vazia");
+                    // Didn't extract this because I would then have to pass the context of the activity through the Factory.
+                    Log.d("MainViewModel", "Error Getting Movie Results");
                 }
             }
 

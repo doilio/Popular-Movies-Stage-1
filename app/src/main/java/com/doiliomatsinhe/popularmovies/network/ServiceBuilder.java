@@ -23,7 +23,6 @@ public class ServiceBuilder {
     private static Retrofit retrofit = builder.build();
 
     public static <Doilio> Doilio BuildService(Class<Doilio> serviceType) {
-
         return retrofit.create(serviceType);
     }
 }

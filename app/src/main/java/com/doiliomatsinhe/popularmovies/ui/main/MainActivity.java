@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.doiliomatsinhe.popularmovies.R;
 import com.doiliomatsinhe.popularmovies.adapter.MovieAdapter;
@@ -67,6 +66,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Gets the Movie from the API Using Separation of Concerns.
+     * @param category is a filter used to know what list it will load.
+     */
     private void recoverMovies(String category) {
         binding.swipeRefresh.setRefreshing(true);
         viewModel.setFilter(category);
@@ -81,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         });
     }
 
+    /**
+     * Initialization of the Adapter, removed from onCreate for better Readability.
+     */
     private void initAdapter() {
         adapter = new MovieAdapter(this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -89,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         binding.recyclerMovies.setAdapter(adapter);
     }
 
+    /**
+     * Initialization of ViewModel.
+     */
     private void initComponentes() {
 
         binding.swipeRefresh.setOnRefreshListener(this);
@@ -104,6 +113,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         decideWhatToShow();
     }
 
+    /**
+     * Method to decide what list to show after rotation has occurred.
+     */
     private void decideWhatToShow() {
         if (viewModel.getFilter() == null) {
             viewModel.setFilter(getString(R.string.popular_filter));

@@ -8,8 +8,15 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIService {
-
-    // https://api.themoviedb.org/3/movie/popular?api_key=64cea8d8a458dde2d8361705d61f6a9a&language=en-US&page=1
+    /**
+     * Asynchronous call to themoviedb API
+     *
+     * @param category used for sorting
+     * @param apiKey   used for querying
+     * @param language is part of the url
+     * @param page     is part of the url
+     * @return a list of movies
+     */
     @GET("/3/movie/{category}")
     Call<MovieResponse> getMovies(
             @Path("category") String category,

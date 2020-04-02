@@ -55,10 +55,10 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.ic_favorite:
-                Toast.makeText(this, "Favorite Clicked!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.favorite_clicked, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ic_share:
-                Toast.makeText(this, "Share Clicked!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.share_clicked, Toast.LENGTH_SHORT).show();
                 break;
 
         }
